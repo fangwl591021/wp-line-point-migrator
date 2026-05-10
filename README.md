@@ -65,3 +65,12 @@ Read:
 ```text
 docs/webhook-gateway.md
 ```
+
+## WordPress Exporter Plugin
+
+For sites where plugin installation is possible, use the read-only exporter:
+
+```text
+wordpress-plugin/wp-line-point-exporter
+docs/wordpress-exporter.md
+```
