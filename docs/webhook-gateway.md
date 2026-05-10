@@ -115,6 +115,66 @@ curl "https://YOUR-GATEWAY.workers.dev/admin/member-links?master_member_ref=wp:5
   -H "Authorization: Bearer YOUR_ADMIN_TOKEN"
 ```
 
+## OA Point Tools
+
+Open the built-in admin tool:
+
+```text
+https://YOUR-GATEWAY.workers.dev/admin/tool
+```
+
+Paste `ADMIN_TOKEN`, choose `OA1` or `OA2`, enter the LINE user ID, then grant or deduct points.
+
+Admin APIs:
+
+```bash
+curl -X POST "https://YOUR-GATEWAY.workers.dev/admin/points/grant" \
+  -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "channel_key": "oa1",
+    "line_user_id": "U...",
+    "point_type": "manual_point",
+    "points": 100,
+    "note": "活動贈點"
+  }'
+```
+
+```bash
+curl -X POST "https://YOUR-GATEWAY.workers.dev/admin/points/deduct" \
+  -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "channel_key": "oa2",
+    "line_user_id": "U...",
+    "point_type": "manual_point",
+    "points": 50,
+    "note": "核銷扣點"
+  }'
+```
+
+Check balance:
+
+```bash
+curl "https://YOUR-GATEWAY.workers.dev/admin/points/balance?channel_key=oa1&line_user_id=U..." \
+  -H "Authorization: Bearer YOUR_ADMIN_TOKEN"
+```
+
+Check ledger:
+
+```bash
+curl "https://YOUR-GATEWAY.workers.dev/admin/points/ledger?channel_key=oa1&line_user_id=U..." \
+  -H "Authorization: Bearer YOUR_ADMIN_TOKEN"
+```
+
+Check-in messages such as `會員打卡` are recorded automatically as `checkin_point`.
+Current defaults:
+
+```text
+OA1 check-in: +10
+OA2 check-in: +5
+```
+
 ## Important
 
 Webhook observation alone can collect UID per OA, but it cannot prove that two different UIDs are the same human.

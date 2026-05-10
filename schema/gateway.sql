@@ -50,3 +50,38 @@ CREATE TABLE IF NOT EXISTS member_line_links (
   PRIMARY KEY(master_member_ref, channel_key),
   UNIQUE(channel_key, line_user_id)
 );
+
+CREATE TABLE IF NOT EXISTS point_accounts (
+  account_key TEXT PRIMARY KEY,
+  master_member_ref TEXT,
+  channel_key TEXT NOT NULL,
+  line_user_id TEXT NOT NULL,
+  point_type TEXT NOT NULL,
+  balance REAL NOT NULL DEFAULT 0,
+  updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(channel_key, line_user_id, point_type)
+);
+
+CREATE TABLE IF NOT EXISTS point_ledger (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  account_key TEXT NOT NULL,
+  master_member_ref TEXT,
+  channel_key TEXT NOT NULL,
+  line_user_id TEXT NOT NULL,
+  action TEXT NOT NULL,
+  point_type TEXT NOT NULL,
+  point_delta REAL NOT NULL,
+  balance_after REAL NOT NULL,
+  source TEXT NOT NULL,
+  source_event_id TEXT,
+  business_key TEXT NOT NULL UNIQUE,
+  note TEXT,
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY(account_key) REFERENCES point_accounts(account_key)
+);
+
+CREATE INDEX IF NOT EXISTS idx_point_ledger_channel_user
+  ON point_ledger(channel_key, line_user_id);
+
+CREATE INDEX IF NOT EXISTS idx_point_ledger_master_member
+  ON point_ledger(master_member_ref);
