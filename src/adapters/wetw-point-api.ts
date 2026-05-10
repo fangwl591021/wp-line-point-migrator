@@ -40,7 +40,8 @@ const queryResponseSchema = z.object({
 export interface WetwPointApiConfig {
   baseUrl: string;
   apiKey: string;
-  shopId: number;
+  shopId?: number;
+  lineUserId?: string;
   providerKey: ProviderKey;
   sourceSite?: string;
   perPage?: number;
@@ -48,6 +49,10 @@ export interface WetwPointApiConfig {
 }
 
 export async function fetchWetwPointEntries(config: WetwPointApiConfig): Promise<NormalizedPointEntry[]> {
+  if (!config.shopId && !config.lineUserId) {
+    throw new Error("Either shopId or lineUserId is required");
+  }
+
   const entries: NormalizedPointEntry[] = [];
   const perPage = Math.min(config.perPage ?? 100, 100);
   const maxPages = config.maxPages ?? 500;
@@ -61,6 +66,7 @@ export async function fetchWetwPointEntries(config: WetwPointApiConfig): Promise
       body: JSON.stringify({
         api_key: config.apiKey,
         shop_id: config.shopId,
+        LINE_user_id: config.lineUserId,
         page,
         per_page: perPage
       })

@@ -18,7 +18,8 @@ program
   .argument("<adapter>", "source adapter, currently: wetw")
   .requiredOption("--base-url <url>", "WETW point API base URL")
   .requiredOption("--api-key <key>", "WETW point API key")
-  .requiredOption("--shop-id <id>", "shop ID", Number)
+  .option("--shop-id <id>", "shop ID", Number)
+  .option("--line-user-id <uid>", "LINE user ID")
   .requiredOption("--provider-key <key>", "provider key, for example oa1")
   .option("--source-site <url>", "source WordPress site URL")
   .option("--per-page <n>", "page size", Number, 100)
@@ -33,6 +34,7 @@ program
       baseUrl: options.baseUrl,
       apiKey: options.apiKey,
       shopId: options.shopId,
+      lineUserId: options.lineUserId,
       providerKey: options.providerKey,
       sourceSite: options.sourceSite,
       perPage: options.perPage,
