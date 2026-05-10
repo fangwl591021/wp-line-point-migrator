@@ -1,6 +1,7 @@
 export interface GatewayEnv {
   DB: D1Database;
   CHANNEL_CONFIG_JSON: string;
+  ADMIN_TOKEN?: string;
 }
 
 export interface ChannelConfig {

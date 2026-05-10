@@ -75,6 +75,46 @@ master_member_ref + channel_key + line_user_id
 
 This is how different LINE Provider user IDs become one master member.
 
+## Admin API
+
+Set `ADMIN_TOKEN` in the private Wrangler config or as a Cloudflare secret.
+
+Create a binding code:
+
+```bash
+curl -X POST "https://YOUR-GATEWAY.workers.dev/admin/binding-codes" \
+  -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "master_member_ref": "wp:534",
+    "ttl_minutes": 60
+  }'
+```
+
+Response:
+
+```json
+{
+  "success": true,
+  "code": "AB12CD34",
+  "instructions": ["綁定 AB12CD34", "bind AB12CD34"]
+}
+```
+
+List collected LINE identities:
+
+```bash
+curl "https://YOUR-GATEWAY.workers.dev/admin/observations" \
+  -H "Authorization: Bearer YOUR_ADMIN_TOKEN"
+```
+
+List member links:
+
+```bash
+curl "https://YOUR-GATEWAY.workers.dev/admin/member-links?master_member_ref=wp:534" \
+  -H "Authorization: Bearer YOUR_ADMIN_TOKEN"
+```
+
 ## Important
 
 Webhook observation alone can collect UID per OA, but it cannot prove that two different UIDs are the same human.

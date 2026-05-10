@@ -21,3 +21,5 @@ database_id = "REPLACE_WITH_D1_DATABASE_ID"
 #   }
 # }
 CHANNEL_CONFIG_JSON = "{}"
+# Set ADMIN_TOKEN in your private config or with Wrangler secrets.
+ADMIN_TOKEN = ""
