@@ -55,3 +55,13 @@ npm run cli -- sync wetw ^
 ## Design Principle
 
 Every client site becomes configuration, not a one-off rewrite.
+
+## Webhook Gateway
+
+The repository also contains a Cloudflare Worker gateway that can sit between LINEOA webhooks and existing WordPress webhook endpoints.
+
+Read:
+
+```text
+docs/webhook-gateway.md
+```

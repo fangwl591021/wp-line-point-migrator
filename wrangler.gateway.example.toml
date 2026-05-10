@@ -1,0 +1,23 @@
+name = "wp-line-point-gateway"
+main = "src/gateway/worker.ts"
+compatibility_date = "2026-05-10"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "wp-line-point-gateway"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+[vars]
+# JSON object keyed by channel key. Secrets should be set with Wrangler secrets in production.
+# Example:
+# {
+#   "oa1": {
+#     "channelSecret": "LINE_CHANNEL_SECRET_OA1",
+#     "forwardUrl": "https://k-link.cc/index.php/line_login/1086/"
+#   },
+#   "oa2": {
+#     "channelSecret": "LINE_CHANNEL_SECRET_OA2",
+#     "forwardUrl": "https://k-link.cc/index.php/line_login/1584/"
+#   }
+# }
+CHANNEL_CONFIG_JSON = "{}"

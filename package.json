@@ -9,15 +9,19 @@
   "scripts": {
     "build": "tsc",
     "check": "tsc --noEmit",
-    "cli": "tsx src/cli.ts"
+    "cli": "tsx src/cli.ts",
+    "gateway:dev": "wrangler dev -c wrangler.gateway.example.toml",
+    "gateway:deploy": "wrangler deploy -c wrangler.gateway.example.toml"
   },
   "dependencies": {
     "commander": "^14.0.2",
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260508.0",
     "@types/node": "^24.10.1",
     "tsx": "^4.20.6",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "wrangler": "^4.90.0"
   }
 }
