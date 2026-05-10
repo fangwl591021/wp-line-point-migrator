@@ -37,6 +37,13 @@ const queryResponseSchema = z.object({
     .optional()
 });
 
+class WetwApiResponseError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "WetwApiResponseError";
+  }
+}
+
 export interface WetwPointApiConfig {
   baseUrl: string;
   apiKey: string;
@@ -72,8 +79,34 @@ export async function fetchWetwPointEntries(config: WetwPointApiConfig): Promise
       })
     });
 
-    const json = await response.json();
-    const parsed = queryResponseSchema.parse(json);
+    const text = await response.text();
+    let json: unknown;
+    try {
+      json = JSON.parse(text);
+    } catch {
+      throw new WetwApiResponseError(
+        [
+          "WETW query did not return JSON.",
+          `HTTP status: ${response.status}`,
+          `Content-Type: ${response.headers.get("content-type") ?? "unknown"}`,
+          `Body preview: ${text.slice(0, 500)}`
+        ].join("\n")
+      );
+    }
+
+    const parsedResult = queryResponseSchema.safeParse(json);
+    if (!parsedResult.success) {
+      throw new WetwApiResponseError(
+        [
+          "WETW query returned an unexpected JSON shape.",
+          `HTTP status: ${response.status}`,
+          `Content-Type: ${response.headers.get("content-type") ?? "unknown"}`,
+          `Validation errors: ${JSON.stringify(parsedResult.error.issues, null, 2)}`,
+          `Body preview: ${JSON.stringify(json).slice(0, 800)}`
+        ].join("\n")
+      );
+    }
+    const parsed = parsedResult.data;
     if (!response.ok || !parsed.success) {
       throw new Error(`WETW query failed: ${parsed.code} ${parsed.message}`);
     }
