@@ -7,6 +7,10 @@ binding = "DB"
 database_name = "wp-line-point-gateway"
 database_id = "REPLACE_WITH_D1_DATABASE_ID"
 
+[[services]]
+binding = "MLM_WORKER"
+service = "mlm"
+
 [vars]
 # JSON object keyed by channel key. Secrets should be set with Wrangler secrets in production.
 # Example:
@@ -23,3 +27,9 @@ database_id = "REPLACE_WITH_D1_DATABASE_ID"
 CHANNEL_CONFIG_JSON = "{}"
 # Set ADMIN_TOKEN in your private config or with Wrangler secrets.
 ADMIN_TOKEN = ""
+# Set MLM_FORWARD_TOKEN with Wrangler secrets. Gateway uses it to sign webhook copies sent to the mlm monitor.
+MLM_FORWARD_URL = "https://mlm.fangwl591021.workers.dev/internal/line-webhook"
+# Keep the real API key in your private config or Wrangler secrets. POINT_API_KEY is also supported.
+WETW_API_KEY = ""
+WETW_MEMBER_API_URL = "https://k-link.cc/index.php/wp-json/wetw/v1/query-line-user-list"
+WETW_POINT_API_BASE_URL = "https://k-link.cc/index.php/wp-json/wetw-point/v1"

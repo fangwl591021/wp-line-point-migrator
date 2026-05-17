@@ -85,3 +85,23 @@ CREATE INDEX IF NOT EXISTS idx_point_ledger_channel_user
 
 CREATE INDEX IF NOT EXISTS idx_point_ledger_master_member
   ON point_ledger(master_member_ref);
+
+CREATE TABLE IF NOT EXISTS crm_members (
+  channel_key TEXT NOT NULL,
+  line_user_id TEXT NOT NULL,
+  wp_user_id TEXT,
+  display_name TEXT,
+  line_display_name TEXT,
+  phone TEXT,
+  shop_id INTEGER,
+  raw_json TEXT NOT NULL,
+  first_synced_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  synced_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY(channel_key, line_user_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_crm_members_channel_shop
+  ON crm_members(channel_key, shop_id);
+
+CREATE INDEX IF NOT EXISTS idx_crm_members_name
+  ON crm_members(display_name, line_display_name, phone);
