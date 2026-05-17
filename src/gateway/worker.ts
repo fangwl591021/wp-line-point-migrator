@@ -93,16 +93,11 @@ async function handleWebhook(request: Request, env: GatewayEnv, channelKey: stri
 
 function hasSmartDailyRewardKeyword(channelKey: string, payload: LineWebhookPayload): boolean {
   if (channelKey !== "oa1") return false;
-  return (payload.events ?? []).some((event) => event.message?.type === "text" && isSmartDailyRewardText(event.message.text));
+  return (payload.events ?? []).some((event) => event.message?.type === "text" && normalizeKeyword(event.message.text) === normalizeKeyword("簽到贈K點"));
 }
 
 function normalizeKeyword(value?: string): string {
   return String(value || "").replace(/\s+/g, "").toLowerCase();
-}
-
-function isSmartDailyRewardText(value?: string): boolean {
-  const text = normalizeKeyword(value);
-  return ["簽到贈K點", "會員打卡", "每日簽到贈點"].map(normalizeKeyword).includes(text);
 }
 
 async function forwardToMlmMonitor(
@@ -157,7 +152,7 @@ async function signGatewayPayload(rawBody: string, token: string): Promise<strin
 
 function detectCheckinPointDelta(channelKey: string, text?: string): number | null {
   if (!text) return null;
-  if (channelKey === "oa1" && isSmartDailyRewardText(text)) return null;
+  if (channelKey === "oa1") return null;
   if (!/每日簽到贈點|會員打卡|打卡|簽到|checkin/i.test(text)) return null;
   return channelKey === "oa2" ? 5 : 10;
 }
