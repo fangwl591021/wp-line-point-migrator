@@ -62,14 +62,17 @@ async function handleWebhook(request: Request, env: GatewayEnv, channelKey: stri
     }
   }
 
-  const forwardResponse = await fetch(config.forwardUrl, {
-    method: "POST",
-    headers: {
-      "content-type": request.headers.get("content-type") ?? "application/json",
-      "x-line-signature": signature ?? ""
-    },
-    body: rawBody
-  });
+  const shouldForwardLegacy = !hasSmartDailyRewardKeyword(channelKey, payload);
+  const forwardResponse = shouldForwardLegacy
+    ? await fetch(config.forwardUrl, {
+      method: "POST",
+      headers: {
+        "content-type": request.headers.get("content-type") ?? "application/json",
+        "x-line-signature": signature ?? ""
+      },
+      body: rawBody
+    })
+    : null;
   const mlmForwarded = await forwardToMlmMonitor(env, channelKey, config.mlmForwardUrl, rawBody, request.headers.get("content-type"));
 
   return json({
@@ -79,11 +82,22 @@ async function handleWebhook(request: Request, env: GatewayEnv, channelKey: stri
     checkin_events: checkinEvents,
     forwarded: {
       url: config.forwardUrl,
-      status: forwardResponse.status,
-      ok: forwardResponse.ok
+      skipped: !shouldForwardLegacy,
+      reason: shouldForwardLegacy ? undefined : "smart_daily_reward_keyword",
+      status: forwardResponse?.status ?? null,
+      ok: forwardResponse?.ok ?? null
     },
     mlm_forwarded: mlmForwarded
   });
+}
+
+function hasSmartDailyRewardKeyword(channelKey: string, payload: LineWebhookPayload): boolean {
+  if (channelKey !== "oa1") return false;
+  return (payload.events ?? []).some((event) => event.message?.type === "text" && normalizeKeyword(event.message.text) === normalizeKeyword("簽到贈K點"));
+}
+
+function normalizeKeyword(value?: string): string {
+  return String(value || "").replace(/\s+/g, "").toLowerCase();
 }
 
 async function forwardToMlmMonitor(
